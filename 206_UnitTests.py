@@ -123,18 +123,15 @@ if __name__ == "__main__":
 ## Also OK to add comments!
 
 #########
-def main():
-    total = 0
-    print()
-    print ('Task 0: Card')
-    Card()
-
-    total += Card(('Queen'), 'Queen')
-
-
-
-if __name__ == '__main__':
-    main()
+class CardTests(unittest.TestCase):
+	def test_cardrank(self):
+		c = Card(rank=12)
+		self.assertEqual(c.rank, "Queen")
+# 
+#
+#
+# if __name__ == '__main__':
+#     main()
 
 
 
