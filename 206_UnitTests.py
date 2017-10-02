@@ -127,7 +127,45 @@ class CardTests(unittest.TestCase):
 	def test_cardrank(self):
 		c = Card(rank=12)
 		self.assertEqual(c.rank, "Queen")
-# 
+		c = Card(rank=1)
+	def test_cardrank1(self):
+		c = Card(rank=1)
+		self.assertEqual(c.rank, "Ace")
+	def test_cardrank2(self):
+		c = Card(rank=3)
+		self.assertEqual(c.rank, 3)
+	def test_cardsuit(self):
+		c = Card(suit=1)
+		self.assertEqual(c.suit, 'Clubs')
+	def test_cardsuit1(self):
+		c = Card(suit=2)
+		self.assertEqual(c.suit, 'Hearts')
+	def test_cardInstance(self):
+		c = Card()
+		self.assertEqual(c.suit_names, ["Diamonds", "Clubs", "Hearts", "Spades"])
+	def test_cardInstance2(self):
+		c = Card(suit=2, rank=7)
+		self.assertEqual(str(c), "7 of Hearts")
+	def test_deckInstance(self):
+		d = Deck()
+		self.assertEqual(len(d.cards),52)
+	def test_popInstance(self):
+		d = Deck()
+		c = Card()
+		self.assertEqual(type(d.pop_card()),type(c))
+	def test_warInstance(self):
+		p = play_war_game()
+		self.assertEqual(len(p),3)
+		self.assertEqual(type(p[0]),str)
+	def test_myTestInstance1(self):
+		c =Card(rank = 13)
+		self.assertEqual(c.rank,'King')
+	def test_myTestInstance2(self):
+		c =Card(rank = 11)
+		self.assertEqual(c.rank,'Jack')
+
+
+#
 #
 #
 # if __name__ == '__main__':
