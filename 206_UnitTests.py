@@ -165,13 +165,6 @@ class CardTests(unittest.TestCase):
 		self.assertEqual(c.rank,'Jack')
 
 
-#
-#
-#
-# if __name__ == '__main__':
-#     main()
-
-
 
 ##**##**##**##@##**##**##**## # DO NOT CHANGE OR DELETE THIS COMMENT LINE -- we use it for grading your file
 ###############################################
