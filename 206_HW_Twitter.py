@@ -7,7 +7,7 @@ import urllib.request, urllib.parse, urllib.error
 
 ## SI 206 - HW
 ## COMMENT WITH:
-## Your section day/time: Thursday 8:30 a.m. 
+## Your section day/time: Thursday 8:30 a.m.
 ## Any names of people you worked with on this assignment:
 
 
@@ -54,8 +54,6 @@ consumer_key = twitter_info.consumer_key
 consumer_secret = twitter_info.consumer_secret
 access_token = twitter_info.access_token
 access_token_secret = twitter_info.access_token_secret
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
 
 ## Set up your authentication to Twitter
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -93,13 +91,13 @@ except:
 ## 		so it either gets new data or caches data, depending upon what the input
 ##		to search for is.
 def getTweetWithCaching(word):
-    full_search= "twitter_{}".format(word)
+    full_search = "twitter_{}".format(word)
     if full_search in CACHE_DICTION:
-        print("Data was in the cache")
+        uprint("Data was in the cache")
         uprint("\n")
         return CACHE_DICTION[full_search]
     else:
-        print("Making a request for new data...")
+        uprint("Making a request for new data...")
         results = api.search(q = full_search, count = 5)
         try:
             CACHE_DICTION[full_search] = results
@@ -109,15 +107,20 @@ def getTweetWithCaching(word):
             fw.close() # Close the open file
             return CACHE_DICTION[full_search]
         except:
-            print("Wasn't in cache and wasn't valid search either")
+            uprint("Wasn't in cache and wasn't valid search either")
             return None
 
-
+## 3. Using a loop, invoke your function, save the return value in a variable, and explore the
+##		data you got back!
 word = input('Enter search term: ')
 while len(word) < 1:
     word = input('Please enter word: ')
 
 data = getTweetWithCaching(word)
+#To see what type of data there is:
+# feedback = [data]
+# uprint (feedback)
+
 text = (data['statuses'])
 
 for tweet in text:
@@ -126,12 +129,6 @@ for tweet in text:
      date = tweet["created_at"]
      uprint ('CREATED AT: ' + date)
      uprint("\n")
-
-
-
-## 3. Using a loop, invoke your function, save the return value in a variable, and explore the
-##		data you got back!
-
 
 ## 4. With what you learn from the data -- e.g. how exactly to find the
 ##		text of each tweet in the big nested structure -- write code to print out
