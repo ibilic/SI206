@@ -9,7 +9,7 @@ import requests
 import json
 import re
 import tweepy
-import twitter_info # still need this in the same directory, filled out
+import twitter_info 
 
 consumer_key = twitter_info.consumer_key
 consumer_secret = twitter_info.consumer_secret
@@ -72,12 +72,6 @@ def get_tweets(word):
             return None
 
 
-
-# api = tweepy.API(auth)
-# data = api.user_timeline(screen_name = 'UMSI', count = 20, include_rts = True)
-# for status in data:
-#     print (status.author, status.user)
-
 ## [PART 2]
 # Create a database: tweets.sqlite,
 # And then load all of those tweets you got from Twitter into a database table called Tweets, with the following columns in each row:
@@ -103,13 +97,6 @@ cur = conn.cursor()
 
 umsi_tweets = get_tweets('umsi')
 
-    #  data = tweet["text"]
-    #  uprint ('TEXT: ' + data)
-    #  date = tweet["created_at"]
-    #  uprint ('CREATED AT: ' + date)
-    #  user = tweet['user']['screen_name']
-    #  uprint ('User: ' + user)
-    #  uprint("\n")
 # # 4 - Use a for loop, the cursor you defined above to execute INSERT statements, that insert the data from each of the tweets in umsi_tweets into the correct columns in each row of the Tweets database table.
 
 text = (umsi_tweets['statuses'])
@@ -121,11 +108,6 @@ for tweet in text:
 # #  5- Use the database connection to commit the changes to the database
 conn.commit() #needed to insert data
 # # You can check out whether it worked in the SQLite browser! (And with the tests.)
-# print ('test for part 2')
-# cur.execute('SELECT time_posted, tweet_text FROM Tweets')
-# all_res = cur.fetchall()
-# for t in all_res:
-    # print(t[0] + " - " + t[1] + "\n")
 #
 # ## [PART 3] - SQL statements
 # # Select all of the tweets (the full rows/tuples of information) from umsi_tweets and display the date and message of each tweet in the form:
