@@ -116,11 +116,13 @@ cur.execute('CREATE TABLE Tweets(tweet_id INTEGER NOT NULL PRIMARY KEY AUTOINCRE
 
 cur.execute('DROP TABLE IF EXISTS Users')
 cur.execute('CREATE TABLE Users (user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, screen_name TEXT, num_favs INTEGER, description TEXT)')
+
+
 quit()
 for data in umich_tweets:
 	tup = data[data['id_str'], data['text'], data['??'], data['created_at'], data['retweet_count']]
     # cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, tweet_text, retweets) VALUES (?,?,?,?,?)', tup)
-
+#
 
 ## You should load into the Tweets table:
 # Info about all the tweets (at least 20) that you gather from the
