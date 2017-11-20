@@ -71,7 +71,7 @@ def get_user_tweets(user):
 		uprint('Data in cache')
 		return CACHE_DICTION[user]
 	else:
-		full_search = api.user_timeline(screen_name = user, count = 1, include_rt = True)
+		full_search = api.user_timeline(screen_name = user, count = 20, include_rt = True)
 		try:
 			uprint('Retreiving data from twitter..')
 			CACHE_DICTION[user] = full_search
@@ -102,27 +102,38 @@ conn = sqlite3.connect('206_APIsAndDBs.sqlite')
 cur = conn.cursor()
 
 cur.execute('DROP TABLE IF EXISTS Tweets')
-cur.execute('CREATE TABLE Tweets(tweet_id TEXT, text TEXT, user_posted TEXT,time_posted DATETIME,retweets INTEGER)')
+cur.execute('CREATE TABLE Tweets(tweet_id TEXT NOT NULL PRIMARY KEY UNIQUE, text TEXT, user_posted TEXT,time_posted DATETIME,retweets INTEGER)')
 
 cur.execute('DROP TABLE IF EXISTS Users')
-cur.execute('CREATE TABLE Users (user_id TEXT, screen_name TEXT, num_favs INTEGER, description TEXT)')
+cur.execute('CREATE TABLE Users (user_id TEXT NOT NULL PRIMARY KEY UNIQUE, screen_name TEXT, num_favs INTEGER, description TEXT)')
 
 
 for data in umich_tweets:
-    tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
-    cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
     tup2 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
     cur.execute('INSERT INTO Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup2)
-    if '@' in data['text']:
-        x = (re.findall('\@[A-z0-9]+', data['text']))
+    tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
+    cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
+    cur.execute('CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, text TEXT NOT NULL,  user_posted TEXT NOT NULL,time_posted DATETIME,retweets INTEGER, FOREIGN KEY (user_posted) REFERENCES Users(user_id) ON UPDATE SET NULL)')
 
-        uprint (x)
-        users = []
-        for user in x:
-            tweet = get_user_tweets(users)
-            tup3 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
-            cur.execute('INSERT INTO Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup3)
-            # uprint (name)
+    #
+    # if Users.screen_name in Tweets.text:
+    #     uprint (hey)
+    # cur.execute('SELECT Users.screen_name FROM Users join Tweets on Users.user_id = Tweets.user_posted')
+
+
+
+    # uprint (tup2)
+    # if '@' in data['text']:
+    #     x = (re.findall('\@[A-z0-9]+', data['text']))
+    #     # uprint (x)
+    #     users = []
+    #     for user in x:
+    #         tweet = get_user_tweets('@bill')
+    #         tup3 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
+    #         cur.execute('INSERT INTO Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup3)
+    #         # uprint (name)
+# cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description FROM Users join Tweets on Users.user_id = Tweets.user_posted')
+
 conn.commit()
     # tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
     # cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
@@ -131,6 +142,10 @@ conn.commit()
 # cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description, Tweets.tweet_id, Tweets.text, Tweets.time_posted, Tweets.retweets FROM Users join Tweets on Users.user_id = Tweets.user_posted')
 # date_message = cur.fetchall()
 # print (date_message)
+# cur.execute('CREATE TABLE Users (user_id TEXT, screen_name TEXT, num_favs INTEGER, description TEXT)')
+
+# cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description FROM Users join Tweets on Users.user_id = Tweets.user_posted')
+
 quit()
 ## You should load into the Tweets table:
 # Info about all the tweets (at least 20) that you gather from the
