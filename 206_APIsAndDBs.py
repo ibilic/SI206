@@ -110,12 +110,27 @@ cur.execute('CREATE TABLE Users (user_id TEXT NOT NULL PRIMARY KEY UNIQUE, scree
 
 for data in umich_tweets:
     tup2 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
-    cur.execute('INSERT INTO Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup2)
+    cur.execute('INSERT OR IGNORE INTO  Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup2)
     tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
     cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
-    cur.execute('CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, text TEXT NOT NULL,  user_posted TEXT NOT NULL,time_posted DATETIME,retweets INTEGER, FOREIGN KEY (user_posted) REFERENCES Users(user_id) ON UPDATE SET NULL)')
 
-    #
+# tup3 = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
+# cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
+info = cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description, Tweets.tweet_id, Tweets.text, Tweets.time_posted, Tweets.retweets FROM Users join Tweets on Users.user_id = Tweets.user_posted')
+fetch_names = cur.fetchall()
+# uprint(fetch_names)
+screen_names = [string[4] for string in fetch_names]
+# x = (re.findall('\@[A-z0-9]+', screen_names))
+# uprint(x)
+# Tweets = api.get_status(tweet_id)
+# user_id = Tweets.user.id
+# uprint(user_id)
+screen_names = [texts.screen_name for texts in screen_names]
+
+# screen_names = [re.search('\@[A-z0-9]+', texts) for texts in screen_names]
+# uprint(screen_names)
+uprint (screen_names)
+
     # if Users.screen_name in Tweets.text:
     #     uprint (hey)
     # cur.execute('SELECT Users.screen_name FROM Users join Tweets on Users.user_id = Tweets.user_posted')
