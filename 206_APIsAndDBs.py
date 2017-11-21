@@ -113,23 +113,38 @@ for data in umich_tweets:
     cur.execute('INSERT OR IGNORE INTO  Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup2)
     tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
     cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
+    for name in data['entities']['user_mentions']:
+        user_mentioned = (name['id'], name['screen_name'],data['favorite_count'],data['user']['description'])
+        cur.execute('INSERT or IGNORE INTO  Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', (user_mentioned))
+
+    #     # cur.execute('INSERT OR IGNORE INTO Users(screen_name)',user1)
+    #     cur.execute('INSERT OR IGNORE INTO  Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', ('null', user['screen_name'], 'null', 'null'))
+
+    # cur.execute('INSERT INTO Users(screen_name,data['entities']['user_mentions'])')
 
 # tup3 = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
 # cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
-info = cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description, Tweets.tweet_id, Tweets.text, Tweets.time_posted, Tweets.retweets FROM Users join Tweets on Users.user_id = Tweets.user_posted')
-fetch_names = cur.fetchall()
+# info = cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description, Tweets.tweet_id, Tweets.text, Tweets.time_posted, Tweets.retweets FROM Users join Tweets on Users.user_id = Tweets.user_posted')
+# fetch_names = cur.fetchall()
+
+
 # uprint(fetch_names)
-screen_names = [string[4] for string in fetch_names]
+# screen_names = [string[4] for string in fetch_names]
 # x = (re.findall('\@[A-z0-9]+', screen_names))
 # uprint(x)
 # Tweets = api.get_status(tweet_id)
 # user_id = Tweets.user.id
 # uprint(user_id)
-screen_names = [texts.screen_name for texts in screen_names]
+# screen_names = [texts.screen_name for texts in screen_names]
 
 # screen_names = [re.search('\@[A-z0-9]+', texts) for texts in screen_names]
 # uprint(screen_names)
-uprint (screen_names)
+# uprint (screen_names)
+# for i in search_results:
+#     print i.text.encode('utf-8')
+#     user_details = api.get_user(user_id = i.from_user_id)
+#     print api.favorites([user_details.screen_name])
+
 
     # if Users.screen_name in Tweets.text:
     #     uprint (hey)
@@ -149,7 +164,6 @@ uprint (screen_names)
     #         # uprint (name)
 # cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description FROM Users join Tweets on Users.user_id = Tweets.user_posted')
 
-conn.commit()
     # tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
     # cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
     # tup2 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
@@ -161,7 +175,6 @@ conn.commit()
 
 # cur.execute('SELECT Users.screen_name, Users.num_favs, Users.description FROM Users join Tweets on Users.user_id = Tweets.user_posted')
 
-quit()
 ## You should load into the Tweets table:
 # Info about all the tweets (at least 20) that you gather from the
 # umich timeline.
@@ -185,12 +198,10 @@ quit()
 
 # Make a query to select all of the records in the Users database.
 # Save the list of tuples in a variable called users_info.
-users_info = cur.execute('SELECT Users.user_id, Users.screen_name, Users.num_favs FROM Users')
-#Users.Description can't be used because it has a encoding error
-# users_info = cur.fetchall()
-# print (users_info)
-# users_info = cur.execute('SELECT * FROM Users')
-
+users_info = cur.execute('SELECT * FROM Users')
+users_info = cur.fetchall()
+uprint (users_info)
+print ('--------------------------------------------------------------------------')
 # Make a query to select all of the user screen names from the database.
 # Save a resulting list of strings (NOT tuples, the strings inside them!)
 # in the variable screen_names. HINT: a list comprehension will make
@@ -198,26 +209,37 @@ users_info = cur.execute('SELECT Users.user_id, Users.screen_name, Users.num_fav
 fetch_names = cur.execute('SELECT Users.screen_name FROM Users')
 fetch_names = cur.fetchall()
 screen_names = [string[0] for string in fetch_names]
+uprint(screen_names)
+print ('--------------------------------------------------------------------------')
 
 
 # Make a query to select all of the tweets (full rows of tweet information)
 # that have been retweeted more than 10 times. Save the result
 # (a list of tuples, or an empty list) in a variable called retweets.
-retweets = cur.execute('SELECT Tweets.retweets FROM Tweets')
+retweets = cur.execute('SELECT Tweets.retweets FROM Tweets WHERE Tweets.retweets > 10')
+retweets = cur.fetchall()
+uprint(retweets)
+print ('--------------------------------------------------------------------------')
 
 
 # Make a query to select all the descriptions (descriptions only) of
 # the users who have favorited more than 500 tweets. Access all those
 # strings, and save them in a variable called favorites,
 # which should ultimately be a list of strings.
-favorites = cur.execute('SELECT Users.num_favs FROM Users')
-
+favorites = cur.execute('SELECT Users.description FROM Users WHERE Users.num_favs > 500')
+favorites = cur.fetchall()
+uprint(favorites)
+print ('--------------------------------------------------------------------------')
 
 # Make a query using an INNER JOIN to get a list of tuples with 2
 # elements in each tuple: the user screenname and the text of the
 # tweet. Save the resulting list of tuples in a variable called joined_data2.
-joined_data = True
+joined_data = cur.execute('SELECT Users.screen_name, Tweets.text FROM Users INNER JOIN Tweets on Users.screen_name = Tweets.text')
+joined_data - cur.fetchall()
+uprint(fetch_data)
 
+conn.commit()
+quit()
 # Make a query using an INNER JOIN to get a list of tuples with 2
 # elements in each tuple: the user screenname and the text of the
 # tweet in descending order based on retweets. Save the resulting
@@ -226,7 +248,6 @@ joined_data = True
 joined_data2 = True
 
 conn.commit()
-# quit()
 ### IMPORTANT: MAKE SURE TO CLOSE YOUR DATABASE CONNECTION AT THE END
 ### OF THE FILE HERE SO YOU DO NOT LOCK YOUR DATABASE (it's fixable,
 ### but it's a pain). ###
