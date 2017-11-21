@@ -112,7 +112,7 @@ cur.execute('CREATE TABLE Users (user_id TEXT NOT NULL PRIMARY KEY UNIQUE, scree
 
 #Extracts data and puts it into database
 for data in umich_tweets:
-    tup2 = [data['user']['id_str'], data['user']['screen_name'], data['favorite_count'], data['user']['description']]
+    tup2 = [data['user']['id_str'], data['user']['screen_name'], data['user']['favourites_count'], data['user']['description']]
     cur.execute('INSERT OR IGNORE INTO  Users(user_id, screen_name, num_favs, description) VALUES (?,?,?,?)', tup2)
     tup = [data['id_str'], data['text'], data['user']['id_str'], data['created_at'], data['retweet_count']]
     cur.execute('INSERT INTO Tweets(tweet_id, text, user_posted, time_posted, retweets) VALUES (?,?,?,?,?)', tup)
